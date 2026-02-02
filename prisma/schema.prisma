@@ -1,0 +1,22 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model UserSettings {
+  id              String   @id @default(uuid())
+  sessionId       String   @unique
+  units           String   @default("metric")
+  updatePeriod    Int      @default(1)
+  widgets         String   @default("{\"wind\":true,\"humidity\":true,\"feelsLike\":true,\"visibility\":true,\"pressure\":true,\"uvIndex\":true,\"precipitation\":true,\"aqi\":true}")
+  activities      String   @default("{\"running\":true,\"jogging\":true,\"cycling\":true,\"hiking\":true}")
+  savedLocations  String   @default("[]")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

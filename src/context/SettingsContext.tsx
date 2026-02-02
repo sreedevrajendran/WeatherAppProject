@@ -44,6 +44,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     // defaults
     const [units, setUnits] = useState<Unit>('metric');
     const [updatePeriod, setUpdatePeriod] = useState<UpdatePeriod>(1);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [widgets, setWidgets] = useState<WidgetVisibility>({
         wind: true,
@@ -65,33 +66,74 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
     const [savedLocations, setSavedLocations] = useState<string[]>([]);
 
-    // Load from LocalStorage on mount
+    // Load settings from database on mount
     useEffect(() => {
-        const saved = localStorage.getItem('weather_settings');
-        if (saved) {
+        async function loadSettings() {
             try {
-                const parsed = JSON.parse(saved);
-                if (parsed.units) setUnits(parsed.units);
-                if (parsed.updatePeriod) setUpdatePeriod(parsed.updatePeriod);
-                if (parsed.widgets) setWidgets(parsed.widgets);
-                if (parsed.activities) setActivities(parsed.activities);
-                if (parsed.savedLocations) setSavedLocations(parsed.savedLocations);
-            } catch (e) {
-                console.error("Failed to load settings", e);
+                const response = await fetch('/api/settings');
+                if (response.ok) {
+                    const data = await response.json();
+                    setUnits(data.units);
+                    setUpdatePeriod(data.updatePeriod);
+                    setWidgets(data.widgets);
+                    setActivities(data.activities);
+                    setSavedLocations(data.savedLocations);
+                }
+            } catch (error) {
+                console.error('Failed to load settings from database:', error);
+                // Fallback to localStorage if database fails
+                const saved = localStorage.getItem('weather_settings');
+                if (saved) {
+                    try {
+                        const parsed = JSON.parse(saved);
+                        if (parsed.units) setUnits(parsed.units);
+                        if (parsed.updatePeriod) setUpdatePeriod(parsed.updatePeriod);
+                        if (parsed.widgets) setWidgets(parsed.widgets);
+                        if (parsed.activities) setActivities(parsed.activities);
+                        if (parsed.savedLocations) setSavedLocations(parsed.savedLocations);
+                    } catch (e) {
+                        console.error("Failed to load settings from localStorage", e);
+                    }
+                }
+            } finally {
+                setIsLoading(false);
             }
         }
+        loadSettings();
     }, []);
 
-    // Save to LocalStorage on change
+    // Save to database with debounce (auto-save after changes)
     useEffect(() => {
-        localStorage.setItem('weather_settings', JSON.stringify({
-            units,
-            updatePeriod,
-            widgets,
-            activities,
-            savedLocations
-        }));
-    }, [units, updatePeriod, widgets, activities, savedLocations]);
+        if (isLoading) return; // Don't save during initial load
+
+        const timeoutId = setTimeout(async () => {
+            try {
+                await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        units,
+                        updatePeriod,
+                        widgets,
+                        activities,
+                        savedLocations
+                    }),
+                });
+                // Also save to localStorage as backup
+                localStorage.setItem('weather_settings', JSON.stringify({
+                    units,
+                    updatePeriod,
+                    widgets,
+                    activities,
+                    savedLocations
+                }));
+            } catch (error) {
+                console.error('Failed to save settings to database:', error);
+            }
+        }, 500); // Debounce 500ms
+
+        return () => clearTimeout(timeoutId);
+    }, [units, updatePeriod, widgets, activities, savedLocations, isLoading]);
 
     const toggleWidget = (key: keyof WidgetVisibility) => {
         setWidgets(prev => ({ ...prev, [key]: !prev[key] }));
