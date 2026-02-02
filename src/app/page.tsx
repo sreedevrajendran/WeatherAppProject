@@ -82,15 +82,35 @@ function WeatherDashboard() {
     }
   }, [fetchByLocation]);
 
-  // Initial Load
+  // Initial Load - Optimized for speed
   useEffect(() => {
-    const pref = localStorage.getItem('location_preference');
-    if (pref === 'allowed') {
-      handleAllowLocation();
+    // Immediately try to get user's location on first load
+    if (navigator.geolocation) {
+      // Request location immediately (non-blocking)
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          fetchByLocation(latitude, longitude);
+          // Save preference for future visits
+          localStorage.setItem('location_preference', 'allowed');
+        },
+        (error) => {
+          // If geolocation fails or is denied, fall back to default city
+          console.log('Geolocation not available, using default city');
+          fetchWeather('London');
+          localStorage.setItem('location_preference', 'denied');
+        },
+        {
+          timeout: 5000, // 5 second timeout for faster fallback
+          maximumAge: 300000, // Cache position for 5 minutes
+          enableHighAccuracy: false // Faster, less accurate is fine for weather
+        }
+      );
     } else {
-      fetchWeather('London'); // Default city if no preference or not allowed
+      // Browser doesn't support geolocation
+      fetchWeather('London');
     }
-  }, [handleAllowLocation, fetchWeather]);
+  }, [fetchByLocation, fetchWeather]);
 
   // Filter Hourly Data based on Period
   const filteredHourly = hourlyData ? hourlyData.filter((_: any, i: number) => i % updatePeriod === 0) : [];
