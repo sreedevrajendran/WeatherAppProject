@@ -82,33 +82,31 @@ function WeatherDashboard() {
     }
   }, [fetchByLocation]);
 
-  // Initial Load - Optimized for speed
+  // Initial Load - Optimized for speed with immediate content
   useEffect(() => {
-    // Immediately try to get user's location on first load
+    // Load default city immediately to avoid empty state
+    fetchWeather('London');
+
+    // Then try to get user's location and update if available
     if (navigator.geolocation) {
-      // Request location immediately (non-blocking)
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
+          // Update with user's actual location
           fetchByLocation(latitude, longitude);
-          // Save preference for future visits
           localStorage.setItem('location_preference', 'allowed');
         },
         (error) => {
-          // If geolocation fails or is denied, fall back to default city
-          console.log('Geolocation not available, using default city');
-          fetchWeather('London');
+          // Geolocation failed, but we already have London loaded
+          console.log('Geolocation not available, showing default city');
           localStorage.setItem('location_preference', 'denied');
         },
         {
-          timeout: 5000, // 5 second timeout for faster fallback
-          maximumAge: 300000, // Cache position for 5 minutes
-          enableHighAccuracy: false // Faster, less accurate is fine for weather
+          timeout: 5000,
+          maximumAge: 300000,
+          enableHighAccuracy: false
         }
       );
-    } else {
-      // Browser doesn't support geolocation
-      fetchWeather('London');
     }
   }, [fetchByLocation, fetchWeather]);
 
