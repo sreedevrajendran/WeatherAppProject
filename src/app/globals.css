@@ -5,22 +5,217 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+@theme {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Deep Cosmic Background */
+    --background: #0f172a;
+    /* Fallback */
+    --background-gradient: radial-gradient(circle at 50% 0%, #172554 0%, #020617 100%);
+    /* Blue-950 to Slate-950 */
+
+    /* Ultra Glass Surface */
+    --card: rgba(255, 255, 255, 0.03);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --card-hover: rgba(255, 255, 255, 0.06);
+
+    /* Text Colors */
+    --text-main: #F8FAFC;
+    /* Slate 50 */
+    --text-muted: #94A3B8;
+    /* Slate 400 */
+
+    /* Accents - Scientific Palette */
+    --accent: #38bdf8;
+    /* Sky 400 */
+    --accent-glow: rgba(56, 189, 248, 0.3);
+    --success: #4ade80;
+    /* Green 400 */
+    --warning: #fbbf24;
+    /* Amber 400 */
+    --danger: #f87171;
+    /* Red 400 */
   }
 }
 
 body {
   background: var(--background);
-  color: var(--foreground);
+  background-image: var(--background-gradient);
+  background-attachment: fixed;
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: var(--card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #ffffff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-accent {
+  background: linear-gradient(to bottom, #38bdf8, #0ea5e9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@layer utilities {
+
+  /* Professional Minimalist Themes */
+  .bg-pro-day {
+    background: linear-gradient(to bottom, #f8fafc 0%, #cbd5e1 100%);
+    /* Slate 50 to Slate 300 */
+  }
+
+  .bg-pro-night {
+    background: linear-gradient(to bottom, #0f172a 0%, #1e293b 100%);
+    /* Slate 900 to Slate 800 */
+  }
+
+  .bg-pro-rain {
+    background: linear-gradient(to bottom, #334155 0%, #475569 100%);
+    /* Slate 700 to Slate 600 */
+  }
+
+  .bg-pro-snow {
+    background: linear-gradient(to bottom, #f1f5f9 0%, #e2e8f0 100%);
+    /* Slate 100 to Slate 200 (Cooler) */
+  }
+
+  /* Ensure text readability is handled by components, but these backgrounds are soft enough */
+
+  /* Semantic Utility Classes */
+  .bg-app-background {
+    background-color: var(--background);
+  }
+
+  .bg-surface {
+    background-color: var(--card);
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    /* shadow-sm */
+  }
+
+  .text-primary {
+    color: var(--text-main);
+  }
+
+  .text-secondary {
+    color: var(--text-muted);
+  }
+
+  .bg-accent {
+    background-color: var(--accent);
+    color: var(--accent-fg);
+  }
+
+  .text-accent {
+    color: var(--accent);
+  }
+}
+
+.glass-card {
+  /* Redefined glass card for the new theme - simpler, less glass, more solid material */
+  background-color: #1E2025;
+  border-radius: 1.5rem;
+  /* rounded-3xl */
+  border: none;
+  box-shadow: none;
+}
+
+
+body {
+  background-color: var(--background);
+  color: var(--text-main);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+html[data-theme='dark'] body,
+html.dark body {
+  background-color: #0B0C0E !important;
+  color: #FFFFFF !important;
+}
+
+/* Weather Animations */
+@keyframes fall {
+  0% {
+    transform: translateY(-10vh);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+@keyframes cloud-float {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100vw);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ray-pulse {
+
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.4;
+    transform: scale(0.95);
+  }
+}
+
+.animate-fall {
+  animation: fall 2s linear infinite;
+}
+
+.animate-cloud {
+  animation: cloud-float 20s linear infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-ray {
+  animation: ray-pulse 3s ease-in-out infinite;
 }
