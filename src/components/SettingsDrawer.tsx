@@ -2,7 +2,7 @@
 
 import { X, Trash2, Settings, Info, MapPin } from 'lucide-react';
 import { useSettings } from '../context/SettingsContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SettingsDrawerProps {
@@ -22,8 +22,20 @@ export function SettingsDrawer({ isOpen, onClose, onSelectLocation }: SettingsDr
 
     const [activeTab, setActiveTab] = useState<'general' | 'locations' | 'about'>('general');
 
+    // Prevent body scroll when drawer is open
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen]);
+
     return (
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
             {isOpen && (
                 <>
                     {/* Backdrop */}
@@ -31,6 +43,7 @@ export function SettingsDrawer({ isOpen, onClose, onSelectLocation }: SettingsDr
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2, ease: "easeInOut" }}
                         onClick={onClose}
                         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"
                     />
@@ -40,8 +53,13 @@ export function SettingsDrawer({ isOpen, onClose, onSelectLocation }: SettingsDr
                         initial={{ x: '100%' }}
                         animate={{ x: 0 }}
                         exit={{ x: '100%' }}
-                        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                        className="fixed top-0 right-0 h-full w-full max-w-md glass-panel border-l border-white/10 z-[70] flex flex-col shadow-2xl"
+                        transition={{
+                            type: 'spring',
+                            damping: 30,
+                            stiffness: 300,
+                            mass: 0.8
+                        }}
+                        className="fixed top-0 right-0 h-full w-full max-w-md glass-panel border-l border-white/10 z-[70] flex flex-col shadow-2xl overflow-hidden"
                     >
                         {/* Header */}
                         <div className="p-6 border-b border-white/10 flex items-center justify-between">
