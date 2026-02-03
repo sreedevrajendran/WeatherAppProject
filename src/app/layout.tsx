@@ -13,12 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SkyCast | Real-time Weather Forecast",
+  title: "Weather Forecast",
   description: "Get accurate real-time weather forecasts with beautiful visualizations. Track temperature, wind, humidity, and outdoor activity conditions for your location.",
   keywords: ["weather", "forecast", "real-time weather", "temperature", "weather app", "outdoor activities"],
   authors: [{ name: "Sreedev Rajendran" }],
   openGraph: {
-    title: "SkyCast | Real-time Weather Forecast",
+    title: "Weather Forecast",
     description: "Beautiful, real-time weather forecasts with activity recommendations",
     type: "website",
   },
