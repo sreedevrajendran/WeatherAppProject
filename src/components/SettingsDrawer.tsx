@@ -195,17 +195,44 @@ export function SettingsDrawer({ isOpen, onClose, onSelectLocation }: SettingsDr
                             )}
 
                             {activeTab === 'about' && (
-                                <div className="text-center space-y-6 py-10">
-                                    <div className="w-20 h-20 bg-gradient-to-tr from-accent to-purple-500 rounded-3xl mx-auto flex items-center justify-center shadow-xl shadow-accent/20">
-                                        <Info className="w-10 h-10 text-white" />
+                                <div className="space-y-6 py-6">
+                                    <div className="text-center space-y-4">
+                                        <div className="w-20 h-20 bg-gradient-to-tr from-accent to-purple-500 rounded-3xl mx-auto flex items-center justify-center shadow-xl shadow-accent/20">
+                                            <Info className="w-10 h-10 text-white" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-2xl font-bold text-white mb-2">Weather Forecast</h3>
+                                            <p className="text-secondary">Version 2.0.0</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-white mb-2">Cosmic Weather</h3>
-                                        <p className="text-secondary">Version 2.0.0 (Cosmic Glass)</p>
+
+                                    {/* Feedback and Privacy Links */}
+                                    <div className="space-y-3 px-4">
+                                        <a
+                                            href="mailto:feedback@weather-forecast.com?subject=Weather App Feedback"
+                                            className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 hover:border-accent/50 transition-all group"
+                                        >
+                                            <span className="text-white font-medium">Send Feedback</span>
+                                            <svg className="w-5 h-5 text-secondary group-hover:text-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </a>
+
+                                        <a
+                                            href="/privacy"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 hover:border-accent/50 transition-all group"
+                                        >
+                                            <span className="text-white font-medium">Privacy Statement</span>
+                                            <svg className="w-5 h-5 text-secondary group-hover:text-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </a>
                                     </div>
-                                    <div className="space-y-2 text-sm text-secondary px-6">
-                                        <p>Designed with deep scientific aesthetics and high-performance glassmorphism.</p>
-                                        <p>© 2026 Sreedev Inc.</p>
+
+                                    <div className="text-center text-sm text-secondary px-6 pt-4 border-t border-white/5">
+                                        <p>© 2026 Sreedev Rajendran</p>
                                     </div>
                                 </div>
                             )}
