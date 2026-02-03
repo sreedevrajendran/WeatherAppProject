@@ -7,6 +7,7 @@ import { LifestyleCard } from '@/components/LifestyleCard';
 import { SearchBar } from '@/components/SearchBar';
 import { SavedLocations } from '@/components/SavedLocations';
 import { WeatherEffects } from '@/components/WeatherEffects';
+import { WeatherAlert, analyzeWeatherConditions } from '@/components/WeatherAlert';
 import { Search, MapPin, Wind, Droplets, Thermometer, Eye, Settings as SettingsIcon, Crosshair, Heart, CloudLightning, Activity, Umbrella, Gauge } from 'lucide-react';
 import { SettingsProvider, useSettings } from '@/context/SettingsContext';
 import { SettingsDrawer } from '@/components/SettingsDrawer';
@@ -227,6 +228,20 @@ function WeatherDashboard() {
               {error}
             </div>
           )}
+
+          {/* Weather Alert */}
+          {!loading && weatherData && (() => {
+            const alert = analyzeWeatherConditions(weatherData);
+            return alert ? (
+              <div className="mb-6">
+                <WeatherAlert
+                  severity={alert.severity}
+                  title={alert.title}
+                  description={alert.description}
+                />
+              </div>
+            ) : null;
+          })()}
 
           {/* Weather Data Grid */}
           {!loading && weatherData && (
