@@ -4,7 +4,7 @@ import { AlertTriangle, AlertCircle, CheckCircle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 
-export type AlertSeverity = 'severe' | 'moderate' | 'minor' | 'safe';
+export type AlertSeverity = 'red' | 'yellow' | 'green';
 
 interface WeatherAlertProps {
     severity: AlertSeverity;
@@ -14,25 +14,19 @@ interface WeatherAlertProps {
 }
 
 const severityConfig = {
-    severe: {
+    red: {
         color: 'bg-red-500/10 border-red-500/50 text-red-400',
         icon: AlertTriangle,
         iconColor: 'text-red-500',
         bgGlow: 'shadow-red-500/20',
     },
-    moderate: {
+    yellow: {
         color: 'bg-yellow-500/10 border-yellow-500/50 text-yellow-400',
         icon: AlertCircle,
         iconColor: 'text-yellow-500',
         bgGlow: 'shadow-yellow-500/20',
     },
-    minor: {
-        color: 'bg-blue-500/10 border-blue-500/50 text-blue-400',
-        icon: AlertCircle,
-        iconColor: 'text-blue-500',
-        bgGlow: 'shadow-blue-500/20',
-    },
-    safe: {
+    green: {
         color: 'bg-green-500/10 border-green-500/50 text-green-400',
         icon: CheckCircle,
         iconColor: 'text-green-500',
@@ -90,7 +84,7 @@ export function WeatherAlert({ severity, title, description, onDismiss }: Weathe
     );
 }
 
-// AI-powered alert analyzer
+// AI-powered alert analyzer (simplified to red, yellow, green only)
 export function analyzeWeatherConditions(weatherData: any): { severity: AlertSeverity; title: string; description: string } | null {
     if (!weatherData) return null;
 
@@ -100,11 +94,11 @@ export function analyzeWeatherConditions(weatherData: any): { severity: AlertSev
     const description = weatherData.weather[0].description.toLowerCase();
     const visibility = weatherData.visibility || 10000;
 
-    // Severe conditions (Red Alert)
+    // 🔴 RED ALERT - Severe/Dangerous conditions
     if (temp > 40 || temp < -5) {
         return {
-            severity: 'severe',
-            title: 'Extreme Temperature Alert',
+            severity: 'red',
+            title: '🚨 Extreme Temperature Alert',
             description: temp > 40
                 ? 'Dangerously hot conditions. Stay indoors, stay hydrated, and avoid outdoor activities.'
                 : 'Extreme cold conditions. Bundle up and limit outdoor exposure.',
@@ -113,33 +107,33 @@ export function analyzeWeatherConditions(weatherData: any): { severity: AlertSev
 
     if (windSpeed > 15) {
         return {
-            severity: 'severe',
-            title: 'High Wind Alert',
+            severity: 'red',
+            title: '🚨 High Wind Alert',
             description: 'Strong winds detected. Secure loose objects and avoid outdoor activities.',
         };
     }
 
     if (description.includes('thunder') || description.includes('storm')) {
         return {
-            severity: 'severe',
-            title: 'Thunderstorm Warning',
+            severity: 'red',
+            title: '⚡ Thunderstorm Warning',
             description: 'Thunderstorm activity detected. Stay indoors and avoid open areas.',
         };
     }
 
     if (visibility < 1000) {
         return {
-            severity: 'severe',
-            title: 'Low Visibility Alert',
+            severity: 'red',
+            title: '🌫️ Low Visibility Alert',
             description: 'Severe fog or mist. Drive carefully and use headlights.',
         };
     }
 
-    // Moderate conditions (Yellow Alert)
+    // 🟡 YELLOW ALERT - Moderate/Caution conditions
     if (temp > 35 || temp < 5) {
         return {
-            severity: 'moderate',
-            title: 'Temperature Advisory',
+            severity: 'yellow',
+            title: '⚠️ Temperature Advisory',
             description: temp > 35
                 ? 'Very hot weather. Stay hydrated and limit sun exposure.'
                 : 'Cold weather. Dress warmly when going outside.',
@@ -148,42 +142,33 @@ export function analyzeWeatherConditions(weatherData: any): { severity: AlertSev
 
     if (description.includes('rain') && !description.includes('light')) {
         return {
-            severity: 'moderate',
-            title: 'Heavy Rain Advisory',
+            severity: 'yellow',
+            title: '🌧️ Heavy Rain Advisory',
             description: 'Heavy rainfall expected. Carry an umbrella and drive carefully.',
         };
     }
 
     if (windSpeed > 10) {
         return {
-            severity: 'moderate',
-            title: 'Windy Conditions',
+            severity: 'yellow',
+            title: '💨 Windy Conditions',
             description: 'Moderate winds. Secure lightweight outdoor items.',
         };
     }
 
     if (humidity > 85) {
         return {
-            severity: 'moderate',
-            title: 'High Humidity',
+            severity: 'yellow',
+            title: '💧 High Humidity',
             description: 'Very humid conditions. Stay cool and hydrated.',
         };
     }
 
-    // Minor conditions (Blue Alert)
-    if (description.includes('cloud') || description.includes('mist')) {
-        return {
-            severity: 'minor',
-            title: 'Cloudy Conditions',
-            description: 'Overcast skies. Good day for indoor activities.',
-        };
-    }
-
-    // Safe conditions (Green Alert)
+    // 🟢 GREEN ALERT - Perfect/Safe conditions
     if (temp >= 18 && temp <= 28 && windSpeed < 5 && !description.includes('rain')) {
         return {
-            severity: 'safe',
-            title: 'Perfect Weather',
+            severity: 'green',
+            title: '✨ Perfect Weather',
             description: 'Ideal conditions for outdoor activities. Enjoy your day!',
         };
     }

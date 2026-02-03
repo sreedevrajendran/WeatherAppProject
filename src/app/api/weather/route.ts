@@ -48,9 +48,9 @@ export async function GET(request: Request) {
     else return NextResponse.json({ error: 'Missing city or coordinates' }, { status: 400 });
 
     try {
-        // Fetch Forecast (WeatherAPI gives current + forecast in one call)
+        // Fetch Forecast with ALERTS enabled (WeatherAPI gives current + forecast + alerts in one call)
         // Requesting 7 days to ensure we have a robust 6-day view
-        const url = `${BASE_URL}/forecast.json?key=${API_KEY}&q=${encodeURIComponent(query)}&days=7&aqi=yes&alerts=no`;
+        const url = `${BASE_URL}/forecast.json?key=${API_KEY}&q=${encodeURIComponent(query)}&days=7&aqi=yes&alerts=yes`;
 
         const res = await fetch(url);
         if (!res.ok) {
@@ -77,12 +77,14 @@ export async function GET(request: Request) {
             wind: {
                 speed: data.current.wind_kph / 3.6
             },
+            visibility: data.current.vis_km * 1000, // Convert km to meters for consistency
             name: data.location.name,
             region: data.location.region, // Added for "City, State" display
             sys: {
                 country: data.location.country
             },
-            dt: data.current.last_updated_epoch
+            dt: data.current.last_updated_epoch,
+            alerts: data.alerts?.alert || [] // Native weather alerts from WeatherAPI
         };
 
         // Extract Hourly Forecast (next 24h from now)
