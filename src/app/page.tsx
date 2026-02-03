@@ -110,6 +110,44 @@ function WeatherDashboard() {
     }
   }, [fetchByLocation, fetchWeather]);
 
+  // Helper: Get friendly weather description
+  const getFriendlyDescription = (temp: number, description: string, feelsLike: number) => {
+    const tempDiff = Math.abs(temp - feelsLike);
+    const isHot = temp > 30;
+    const isCold = temp < 10;
+    const isComfortable = temp >= 18 && temp <= 26;
+
+    let prefix = '';
+    if (description.toLowerCase().includes('clear') || description.toLowerCase().includes('sunny')) {
+      prefix = temp > 25 ? 'Bright and sunny' : 'Mostly sunny';
+    } else if (description.toLowerCase().includes('cloud')) {
+      prefix = 'Partly cloudy';
+    } else if (description.toLowerCase().includes('rain')) {
+      prefix = 'Rainy';
+    } else if (description.toLowerCase().includes('snow')) {
+      prefix = 'Snowy';
+    }
+
+    let suffix = '';
+    if (tempDiff > 5) {
+      suffix = feelsLike > temp ? ' • Feels warmer' : ' • Feels cooler';
+    } else if (isComfortable) {
+      suffix = ' • Perfect weather';
+    } else if (isHot) {
+      suffix = ' • Stay hydrated';
+    } else if (isCold) {
+      suffix = ' • Bundle up';
+    }
+
+    return { prefix: prefix || description, suffix };
+  };
+
+  const weatherDescription = weatherData ? getFriendlyDescription(
+    weatherData.main.temp,
+    weatherData.weather[0].description,
+    weatherData.main.feels_like
+  ) : null;
+
   // Filter Hourly Data based on Period
   const filteredHourly = hourlyData ? hourlyData.filter((_: any, i: number) => i % updatePeriod === 0) : [];
 
@@ -209,9 +247,25 @@ function WeatherDashboard() {
                   <div className="text-9xl font-bold text-gradient-accent tracking-tighter mb-4 drop-shadow-2xl relative z-10">
                     {Math.round(convertTemp(weatherData.main.temp))}{tempUnit}
                   </div>
-                  <p className="text-secondary text-xl font-medium capitalize mb-10 tracking-wide relative z-10">
-                    {weatherData.weather[0].description}
-                  </p>
+
+                  {/* Friendly Description */}
+                  <div className="relative z-10 mb-6">
+                    <p className="text-primary text-2xl font-semibold capitalize mb-1">
+                      {weatherDescription?.prefix}
+                    </p>
+                    {weatherDescription?.suffix && (
+                      <p className="text-accent text-sm font-medium">
+                        {weatherDescription.suffix}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Feels Like Badge */}
+                  <div className="glass-panel px-4 py-2 rounded-full border border-white/10 relative z-10 mb-8">
+                    <p className="text-secondary text-sm">
+                      Feels like <span className="text-primary font-semibold">{Math.round(convertTemp(weatherData.main.feels_like))}{tempUnit}</span>
+                    </p>
+                  </div>
 
                   {/* Configurable Bento Grid */}
                   <div className="w-full grid grid-cols-2 gap-4 mt-8 relative z-10">
