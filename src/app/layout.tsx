@@ -17,10 +17,15 @@ export const metadata: Metadata = {
   description: "Get accurate real-time weather forecasts with beautiful visualizations. Track temperature, wind, humidity, and outdoor activity conditions for your location.",
   keywords: ["weather", "forecast", "real-time weather", "temperature", "weather app", "outdoor activities"],
   authors: [{ name: "Sreedev Rajendran" }],
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
     title: "Weather Forecast",
     description: "Beautiful, real-time weather forecasts with activity recommendations",
     type: "website",
+    images: ["/logo.png"],
   },
 };
 
