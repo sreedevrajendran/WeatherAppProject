@@ -232,7 +232,7 @@ export function SettingsDrawer({ isOpen, onClose, onSelectLocation }: SettingsDr
                                     </div>
 
                                     <div className="text-center text-sm text-secondary px-6 pt-4 border-t border-white/5">
-                                        <p>© 2026 Sreedev Rajendran</p>
+                                        <p>Made with ❤️ by Sreedev Rajendran</p>
                                     </div>
                                 </div>
                             )}
